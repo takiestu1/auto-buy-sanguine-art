@@ -1,0 +1,1 @@
+# auto-buy-sanguine-art
