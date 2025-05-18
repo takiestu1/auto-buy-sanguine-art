@@ -1,0 +1,88 @@
+-- GUI SETUP
+local gui = Instance.new("ScreenGui", game.CoreGui)
+gui.Name = "BloxGUI"
+
+-- Hàm tạo nút, posY là số pixel (ví dụ: 0, 50, 100,...)
+local function createButton(text, posY)
+	local btn = Instance.new("TextButton")
+	btn.Size = UDim2.new(0, 240, 0, 40)
+	btn.Position = UDim2.new(0, 20, 0, posY)  -- posY là pixel, đặt ở phần offset
+	btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+	btn.TextColor3 = Color3.new(1, 1, 1)
+	btn.Font = Enum.Font.SourceSansBold
+	btn.TextSize = 20
+	btn.Text = text
+	btn.Parent = gui
+	return btn
+end
+
+local CommF_ = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("CommF_")
+local player = game.Players.LocalPlayer
+
+-------------------------------
+-- 1. Auto Buy Sanguine Art --
+-------------------------------
+local autoSanguine = false
+local btnSanguine = createButton("🔴 Auto Buy Sanguine: OFF", 0)  -- posY = 0 px
+
+btnSanguine.MouseButton1Click:Connect(function()
+	autoSanguine = not autoSanguine
+	btnSanguine.Text = autoSanguine and "🟢 Auto Buy Sanguine: ON" or "🔴 Auto Buy Sanguine: OFF"
+end)
+
+task.spawn(function()
+	while true do
+		if autoSanguine and not player.Character:FindFirstChild("Sanguine Art") then
+			pcall(function()
+				CommF_:InvokeServer("BuySanguineArt", true)
+				wait(0.2)
+				CommF_:InvokeServer("BuySanguineArt")
+			end)
+		end
+		wait(2)
+	end
+end)
+
+--------------------------------
+-- 2. Auto Buy Sharkman Karate --
+--------------------------------
+local autoShark = false
+local btnShark = createButton("🔴 Auto Buy Sharkman: OFF", 50)  -- posY = 50 px
+
+btnShark.MouseButton1Click:Connect(function()
+	autoShark = not autoShark
+	btnShark.Text = autoShark and "🟢 Auto Buy Sharkman: ON" or "🔴 Auto Buy Sharkman: OFF"
+end)
+
+task.spawn(function()
+	while true do
+		if autoShark and not player.Character:FindFirstChild("Sharkman Karate") then
+			pcall(function()
+				CommF_:InvokeServer("BuySharkmanKarate", true)
+				wait(0.2)
+				CommF_:InvokeServer("BuySharkmanKarate")
+			end)
+		end
+		wait(2)
+	end
+end)
+
+---------------------------
+-- 3. Toggle Script khác --
+---------------------------
+local customScriptOn = false
+local btnCustom = createButton("🔴 Script Khác: OFF", 100)  -- posY = 100 px
+
+btnCustom.MouseButton1Click:Connect(function()
+	customScriptOn = not customScriptOn
+	btnCustom.Text = customScriptOn and "🟢 Script Khác: ON" or "🔴 Script Khác: OFF"
+
+	if customScriptOn then
+		pcall(function()
+			-- THAY BẰNG SCRIPT THẬT SỰ
+			repeat wait() until game:IsLoaded() and game.Players.LocalPlayer 
+            getgenv().Key = "6ffcbc1e9ef02db356203850" 
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/obiiyeuem/vthangsitink/main/BananaHub.lua"))()
+		end)
+	end
+end)
